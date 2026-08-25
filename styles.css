@@ -625,3 +625,90 @@ figure.chart figcaption {
   .term-defs > div { grid-template-columns: 60px 1fr; gap: 12px; }
   .meta-list span { display: block; min-width: 0; }
 }
+
+/* ============================================================
+   Reading progress
+   Wide screens get the side rail; narrower ones fall back to a
+   thin bar under the header, since there's no room beside the text.
+   ============================================================ */
+.read-progress {
+  position: fixed;
+  top: var(--header-h);
+  left: 0;
+  width: 100%;
+  height: 3px;
+  z-index: 49;
+  background: transparent;
+  pointer-events: none;
+}
+.read-progress span {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--accent);
+  transition: width .08s linear;
+}
+
+.reading-rail {
+  display: none;
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  /* Sit in the gutter beside the 760px column, never overlapping it. */
+  left: max(24px, calc(50vw - 570px));
+  width: 190px;
+  z-index: 40;
+}
+.rail-track {
+  position: absolute;
+  left: 0;
+  top: 4px;
+  bottom: 4px;
+  width: 2px;
+  background: var(--border);
+  border-radius: 2px;
+}
+.rail-fill {
+  width: 2px;
+  height: 0;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: height .12s linear;
+}
+.rail-list {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 22px;
+}
+.rail-list li { position: relative; }
+.rail-list a {
+  display: block;
+  padding: 6px 0;
+  font-size: .82rem;
+  line-height: 1.3;
+  color: var(--text-muted);
+  transition: color .15s ease;
+}
+.rail-list a:hover { color: var(--text); text-decoration: none; }
+.rail-list a.active { color: var(--text); font-weight: 600; }
+.rail-list a.active::before {
+  content: "";
+  position: absolute;
+  left: -25px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px var(--bg);
+}
+
+@media (min-width: 1180px) {
+  .reading-rail { display: block; }
+  .read-progress { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .read-progress span, .rail-fill { transition: none; }
+}

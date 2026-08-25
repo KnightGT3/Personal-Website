@@ -29,6 +29,23 @@
     </div>
   </header>
 
+  <div class="read-progress" aria-hidden="true"><span id="read-progress-fill"></span></div>
+
+  <nav class="reading-rail" aria-label="Article progress">
+    <div class="rail-track" aria-hidden="true"><div class="rail-fill" id="rail-fill"></div></div>
+    <ol class="rail-list">
+      <li><a href="#question">The question</a></li>
+      <li><a href="#method">Method</a></li>
+      <li><a href="#dot-com">Dating Dot-Com</a></li>
+      <li><a href="#cisco">Cisco</a></li>
+      <li><a href="#ai-break">The AI break</a></li>
+      <li><a href="#nvidia">Nvidia</a></li>
+      <li><a href="#model">The model</a></li>
+      <li><a href="#result">Result</a></li>
+      <li><a href="#caveats">Caveats</a></li>
+    </ol>
+  </nav>
+
   <main id="main" class="article">
     <div class="container container-narrow">
 
@@ -76,7 +93,7 @@
       </section>
 
       <!-- ─────────────── The question ─────────────── -->
-      <section class="prose">
+      <section class="prose" id="question">
         <h2>The question</h2>
         <p>
           The Dot-Com bubble produced companies with explosive valuations and
@@ -94,7 +111,7 @@
       </section>
 
       <!-- ─────────────── Method ─────────────── -->
-      <section class="prose">
+      <section class="prose" id="method">
         <h2>How I approached it</h2>
         <p>
           Comparing two eras requires deciding when each one started and ended,
@@ -122,7 +139,7 @@
       </section>
 
       <!-- ─────────────── Dot-Com dating ─────────────── -->
-      <section class="prose">
+      <section class="prose" id="dot-com">
         <h2>Dating the Dot-Com era</h2>
         <p>
           The bubble is visible in price, but it's far more legible in risk. The
@@ -181,7 +198,7 @@
       </section>
 
       <!-- ─────────────── Cisco proxy ─────────────── -->
-      <section class="prose">
+      <section class="prose" id="cisco">
         <h2>Cisco as the Dot-Com bellwether</h2>
         <p>
           Cisco held the largest market capitalisation at the peak, and it sold
@@ -209,7 +226,7 @@
       </section>
 
       <!-- ─────────────── AI era ─────────────── -->
-      <section class="prose">
+      <section class="prose" id="ai-break">
         <h2>The AI era's structural break</h2>
         <p>
           For the AI era I tested ChatGPT's release on 30 November 2022. The Chow
@@ -237,7 +254,7 @@
       </section>
 
       <!-- ─────────────── Nvidia ─────────────── -->
-      <section class="prose">
+      <section class="prose" id="nvidia">
         <h2>Nvidia is not Cisco</h2>
         <p>
           This is where the analogy starts to come apart. Nvidia is an industry
@@ -289,7 +306,7 @@
       </section>
 
       <!-- ─────────────── The model ─────────────── -->
-      <section class="prose">
+      <section class="prose" id="model">
         <h2>Measuring fragility directly</h2>
         <p>
           Everything above is descriptive. To compare fragility as a number, I
@@ -327,7 +344,7 @@
       </section>
 
       <!-- ─────────────── Result ─────────────── -->
-      <section class="prose">
+      <section class="prose" id="result">
         <h2>The result</h2>
         <p>
           Both eras show genuine asymmetry — crashes cause more fear than rallies
@@ -368,7 +385,7 @@
       </section>
 
       <!-- ─────────────── Caveats ─────────────── -->
-      <section class="prose">
+      <section class="prose" id="caveats">
         <h2>What this doesn't prove</h2>
         <p>
           A few limits worth stating plainly, since the conclusion is the kind
@@ -418,7 +435,7 @@
   <footer class="site-footer">
     <div class="container footer-inner">
       <p>© <span id="year">2026</span> Carter Lin</p>
-      <p><a href="#top">Back to top ↑</a></p>
+      <p><a href="#main">Back to top ↑</a></p>
     </div>
   </footer>
 

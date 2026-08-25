@@ -44,7 +44,8 @@
   }
 
   /* ---------- Highlight the nav link for the section in view ---------- */
-  var links = nav ? Array.prototype.slice.call(nav.querySelectorAll("a")) : [];
+  // Only same-page anchors — an href like "/#work" is not a valid selector.
+  var links = nav ? Array.prototype.slice.call(nav.querySelectorAll('a[href^="#"]')) : [];
   var sections = links
     .map(function (link) { return document.querySelector(link.getAttribute("href")); })
     .filter(Boolean);
@@ -87,5 +88,52 @@
       { threshold: 0.12 }
     );
     revealables.forEach(function (el) { revealer.observe(el); });
+  }
+
+  /* ---------- Reading progress (article pages) ---------- */
+  var article = document.querySelector(".article");
+  var railFill = document.getElementById("rail-fill");
+  var topFill = document.getElementById("read-progress-fill");
+
+  if (article && (railFill || topFill)) {
+    var updateProgress = function () {
+      var rect = article.getBoundingClientRect();
+      var scrollable = rect.height - window.innerHeight;
+      var pct = scrollable > 0
+        ? Math.min(1, Math.max(0, -rect.top / scrollable))
+        : (rect.top <= 0 ? 1 : 0);
+      var value = (pct * 100).toFixed(2) + "%";
+      if (railFill) railFill.style.height = value;
+      if (topFill) topFill.style.width = value;
+    };
+    window.addEventListener("scroll", updateProgress, { passive: true });
+    window.addEventListener("resize", updateProgress);
+    updateProgress();
+  }
+
+  /* ---------- Highlight the rail entry for the section in view ---------- */
+  var railLinks = Array.prototype.slice.call(
+    document.querySelectorAll(".rail-list a")
+  );
+  var railSections = railLinks
+    .map(function (link) { return document.querySelector(link.getAttribute("href")); })
+    .filter(Boolean);
+
+  if ("IntersectionObserver" in window && railSections.length) {
+    var railSpy = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          railLinks.forEach(function (link) {
+            link.classList.toggle(
+              "active",
+              link.getAttribute("href") === "#" + entry.target.id
+            );
+          });
+        });
+      },
+      { rootMargin: "-20% 0px -70% 0px" }
+    );
+    railSections.forEach(function (section) { railSpy.observe(section); });
   }
 })();
