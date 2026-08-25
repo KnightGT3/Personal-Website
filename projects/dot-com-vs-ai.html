@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Dot-Com vs. AI Boom — Carter Lin</title>
+  <meta name="description" content="An empirical comparison of the Dot-Com bubble and the AI boom using Chow tests, rolling beta, and GJR-GARCH volatility models.">
+
+  <meta property="og:title" content="Dot-Com vs. AI Boom">
+  <meta property="og:description" content="Measuring whether the AI boom is as fragile as the Dot-Com bubble — Chow tests, rolling beta, and GJR-GARCH.">
+  <meta property="og:type" content="article">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header" id="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="/">CL</a>
+      <nav class="site-nav" id="site-nav" aria-label="Main">
+        <a href="/#work">← All work</a>
+        <a href="/#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="article">
+    <div class="container container-narrow">
+
+      <!-- ─────────────── Header ─────────────── -->
+      <header class="article-header">
+        <p class="eyebrow">Research · December 2025</p>
+        <h1>Is the AI boom another Dot-Com bubble?</h1>
+        <p class="lede">
+          Everyone reaches for the comparison. I wanted to know whether it survives
+          contact with the data — so I dated both eras statistically, picked a
+          bellwether stock for each, and measured which one was structurally more
+          fragile.
+        </p>
+
+        <ul class="meta-list">
+          <li><span>Methods</span> Chow tests, rolling correlation &amp; beta, GJR-GARCH(1,1)</li>
+          <li><span>Data</span> NASDAQ Composite, Cisco (CSCO), Nvidia (NVDA)</li>
+          <li><span>Tools</span> Python · statsmodels · arch</li>
+        </ul>
+      </header>
+
+      <!-- ─────────────── Headline finding ─────────────── -->
+      <section class="findings" aria-label="Headline findings">
+        <div class="finding">
+          <p class="finding-value">0.203 <span class="vs">vs</span> 0.114</p>
+          <p class="finding-label">
+            Leverage effect (γ) for Cisco vs. Nvidia — the Dot-Com era was
+            roughly <strong>1.8× more fragile</strong>
+          </p>
+        </div>
+        <div class="finding">
+          <p class="finding-value">+30.77</p>
+          <p class="finding-label">
+            Shift in NASDAQ daily trend after ChatGPT's release, from
+            −16.7 to +14.0 points/day
+          </p>
+        </div>
+        <div class="finding">
+          <p class="finding-value">20.4%</p>
+          <p class="finding-label">
+            Volatility spread between Nvidia and the broad market — the AI risk
+            is concentrated, not systemic
+          </p>
+        </div>
+      </section>
+
+      <!-- ─────────────── The question ─────────────── -->
+      <section class="prose">
+        <h2>The question</h2>
+        <p>
+          The Dot-Com bubble produced companies with explosive valuations and
+          almost no earnings, and when it broke it cost investors enormously. The
+          AI era rhymes: OpenAI, Anthropic, Oracle, and Nvidia are all spending
+          extraordinary sums on R&amp;D and compute, and the valuations have
+          followed.
+        </p>
+        <p>
+          The interesting question isn't whether prices are high — they plainly
+          are. It's whether the <em>structure</em> of the market is the same.
+          A bubble isn't just an expensive market; it's a brittle one, where bad
+          news does disproportionate damage. That property can be measured.
+        </p>
+      </section>
+
+      <!-- ─────────────── Method ─────────────── -->
+      <section class="prose">
+        <h2>How I approached it</h2>
+        <p>
+          Comparing two eras requires deciding when each one started and ended,
+          and that choice drives everything downstream. Rather than pick dates by
+          intuition, I used sensitivity tests to find the months that separate the
+          regimes most cleanly, then confirmed the breaks statistically.
+        </p>
+        <ol class="method-list">
+          <li>
+            <strong>Date the regimes.</strong> Use <em>Chow tests</em> to confirm
+            that a candidate date marks a genuine structural break in trend, not
+            just a memorable headline.
+          </li>
+          <li>
+            <strong>Pick a proxy.</strong> Choose the company that best represents
+            each boom's infrastructure layer, then validate the choice with
+            rolling correlation and beta against the index.
+          </li>
+          <li>
+            <strong>Measure fragility.</strong> Fit a <em>GJR-GARCH(1,1)</em>
+            model to each proxy and compare the asymmetry term, which captures how
+            much harder the market reacts to losses than to gains.
+          </li>
+        </ol>
+      </section>
+
+      <!-- ─────────────── Dot-Com dating ─────────────── -->
+      <section class="prose">
+        <h2>Dating the Dot-Com era</h2>
+        <p>
+          The bubble is visible in price, but it's far more legible in risk. The
+          NASDAQ climbed through the late nineties on <em>low</em> volatility —
+          mostly under 25% annualized — which is what a market looks like when it
+          believes its own story. After the 2000 peak, volatility clusters above
+          60%. That regime change, not the price peak, is the real signature.
+        </p>
+
+        <figure class="chart">
+          <img src="/projects/dotcom-ai/nasdaq-price-and-volatility.png"
+               alt="Two stacked charts: NASDAQ Composite price from 1995 to 2003 peaking near 5000 in 2000, and annualized rolling volatility rising from under 20 percent to peaks near 90 percent after 2000."
+               loading="lazy" width="716" height="573">
+          <figcaption>
+            The price bubble and the panic beneath it. Volatility stays quiet all
+            the way up, then explodes on the way down.
+          </figcaption>
+        </figure>
+
+        <h3>Start: the Netscape IPO, 9 August 1995</h3>
+        <p>
+          I used Netscape's IPO as the entry point into the Dot-Com regime. The
+          Chow test finds a significant time interaction there: both trend
+          acceleration and volatility change measurably around that date, which is
+          what you'd want from a regime boundary rather than an anecdote.
+        </p>
+
+        <figure class="chart">
+          <img src="/projects/dotcom-ai/netscape-ipo-trend-break.png"
+               alt="NASDAQ price from 1993 to 1997 with a dashed vertical line at the August 1995 Netscape IPO, after which the upward slope steepens."
+               loading="lazy" width="742" height="411">
+          <figcaption>
+            Trend acceleration around the Netscape IPO. The slope after the line
+            is visibly steeper than the slope before it.
+          </figcaption>
+        </figure>
+
+        <h3>End: 9 October 2002</h3>
+        <p>
+          For the end of the cycle I used the date the NASDAQ hit its all-time low
+          — down roughly 78% from the peak — which followed the Enron and WorldCom
+          fraud scandals. Volatility didn't return to normal until around January
+          2003, so the low marks the bottom of the panic rather than its
+          resolution.
+        </p>
+
+        <figure class="chart">
+          <img src="/projects/dotcom-ai/bubble-end-volatility.png"
+               alt="Annualized volatility from mid-2000 to early 2004 declining from around 60 percent to below 25 percent, crossing a normal threshold line in early 2003."
+               loading="lazy" width="742" height="411">
+          <figcaption>
+            When did fear vanish? Volatility falls back through the 25% threshold
+            in early 2003, marking the end of the crisis regime.
+          </figcaption>
+        </figure>
+      </section>
+
+      <!-- ─────────────── Cisco proxy ─────────────── -->
+      <section class="prose">
+        <h2>Cisco as the Dot-Com bellwether</h2>
+        <p>
+          Cisco held the largest market capitalisation at the peak, and it sold
+          the infrastructure everyone else's business plans depended on — the same
+          structural position Nvidia occupies today. That parallel is what makes
+          the comparison worth drawing at all.
+        </p>
+        <p>
+          Before leaning on it, the proxy needs validating. Rolling correlation
+          against the NASDAQ sits above 0.8 for most of the window, and rolling
+          beta runs consistently above 1 — meaning Cisco didn't merely track the
+          market, it amplified it. A 1% NASDAQ move corresponded to roughly a 2.5%
+          Cisco move.
+        </p>
+
+        <figure class="chart">
+          <img src="/projects/dotcom-ai/cisco-proxy-analysis.png"
+               alt="Three stacked panels: normalized price showing Cisco far outrunning the NASDAQ into 2000 then collapsing; rolling correlation mostly between 0.6 and 0.9; and rolling beta ranging from about 1.0 to 3.0."
+               loading="lazy" width="742" height="1015">
+          <figcaption>
+            Cisco as a risk multiplier: it tracked the index closely and moved
+            about two and a half times as hard.
+          </figcaption>
+        </figure>
+      </section>
+
+      <!-- ─────────────── AI era ─────────────── -->
+      <section class="prose">
+        <h2>The AI era's structural break</h2>
+        <p>
+          For the AI era I tested ChatGPT's release on 30 November 2022. The Chow
+          test returns a highly significant break (p &lt; 0.001), and the
+          regression makes the size of it concrete: before the release the NASDAQ
+          was in a secular downtrend averaging −16.7 points per day. The
+          interaction term adds <strong>+30.77</strong>, flipping the trajectory to
+          +14.0 points per day.
+        </p>
+        <p>
+          A consumer chatbot launch moving the aggregate index is a strong claim,
+          and it's the result I double-checked hardest. It holds: generative AI
+          registers as a systemic catalyst, not a sector-local story.
+        </p>
+
+        <figure class="chart">
+          <img src="/projects/dotcom-ai/chatgpt-chow-test.png"
+               alt="OLS regression output table above a NASDAQ price chart for 2022 to 2024, with a dashed vertical line at the November 2022 ChatGPT release after which the index trends upward."
+               loading="lazy" width="716" height="761">
+          <figcaption>
+            Chow test around 30 November 2022. R² = 0.769, and every coefficient
+            including the time interaction is significant at p &lt; 0.001.
+          </figcaption>
+        </figure>
+      </section>
+
+      <!-- ─────────────── Nvidia ─────────────── -->
+      <section class="prose">
+        <h2>Nvidia is not Cisco</h2>
+        <p>
+          This is where the analogy starts to come apart. Nvidia is an industry
+          giant with the same infrastructure-monopoly shape, but it does not lead
+          the market the way Cisco did. Its rolling correlation with the NASDAQ is
+          lower and far less stable, and its volatility is largely detached from
+          the broad economy.
+        </p>
+        <p>
+          The AI boom, in other words, is more concentrated than the Dot-Com boom
+          was. Cisco <em>was</em> the market; Nvidia is a very large, very volatile
+          object inside a market that is otherwise behaving itself.
+        </p>
+
+        <figure class="chart">
+          <img src="/projects/dotcom-ai/nvidia-proxy-analysis.png"
+               alt="Three stacked panels for Nvidia since 2022: normalized price rising to about 1200 versus NASDAQ near 200; rolling correlation oscillating between 0.5 and 0.93; and rolling beta between about 1.3 and 2.6."
+               loading="lazy" width="686" height="972">
+          <figcaption>
+            Nvidia against the NASDAQ. Correlation is meaningfully weaker and
+            choppier than Cisco's, despite a far steeper price run.
+          </figcaption>
+        </figure>
+
+        <h3>Is the panic contained?</h3>
+        <p>
+          So far, yes. Nvidia's annualized volatility repeatedly spikes above 60%,
+          while NASDAQ volatility mostly sits near its 20% norm — a spread of about
+          20.4 percentage points. Systemic panic would show up as those two lines
+          converging upward. They haven't.
+        </p>
+        <p>
+          There's a qualitative difference in the fear, too. Dot-Com fear became
+          concrete: Enron and WorldCom were real frauds with real convictions. AI
+          fear is still largely projective — job displacement, political
+          instability, capability worries — none of which has yet produced the
+          balance-sheet event that ends a cycle.
+        </p>
+
+        <figure class="chart">
+          <img src="/projects/dotcom-ai/ai-era-risk-spread.png"
+               alt="Volatility chart from 2023 to 2026 with Nvidia's volatility in green frequently above 60 percent and NASDAQ volatility in black mostly near 20 percent, annotated with a 20.4 percent spread."
+               loading="lazy" width="686" height="428">
+          <figcaption>
+            Concentrated, not systemic: the AI proxy is wild while the index it
+            sits inside stays calm.
+          </figcaption>
+        </figure>
+      </section>
+
+      <!-- ─────────────── The model ─────────────── -->
+      <section class="prose">
+        <h2>Measuring fragility directly</h2>
+        <p>
+          Everything above is descriptive. To compare fragility as a number, I
+          fitted a GJR-GARCH(1,1) model to each proxy. Ordinary GARCH treats good
+          and bad news symmetrically, which is exactly wrong for bubbles — markets
+          panic downward far more readily than they celebrate upward. GJR adds a
+          term for that asymmetry.
+        </p>
+
+        <figure class="chart chart-plain">
+          <img src="/projects/dotcom-ai/gjr-garch-model.png"
+               alt="The GJR-GARCH model equations with a list defining each term: mu the mean return, sigma squared the predicted variance, omega baseline variance, alpha the ARCH reaction to news, gamma the leverage effect, the indicator switch, and beta the persistence."
+               loading="lazy" width="686" height="381">
+          <figcaption>The model and its terms.</figcaption>
+        </figure>
+
+        <p>The two terms that matter for this question:</p>
+        <dl class="term-defs">
+          <div>
+            <dt><em>I</em><sub>t−1</sub></dt>
+            <dd>
+              The panic switch. It equals 1 if yesterday's return was negative and
+              0 if it was positive.
+            </dd>
+          </div>
+          <div>
+            <dt>γ</dt>
+            <dd>
+              The leverage effect — the <em>extra</em> volatility added when that
+              switch is on. This is the fragility measure. A larger γ means losses
+              destabilise the stock more than equivalent gains stabilise it.
+            </dd>
+          </div>
+        </dl>
+      </section>
+
+      <!-- ─────────────── Result ─────────────── -->
+      <section class="prose">
+        <h2>The result</h2>
+        <p>
+          Both eras show genuine asymmetry — crashes cause more fear than rallies
+          in each. But the magnitudes differ substantially.
+        </p>
+
+        <div class="compare-grid">
+          <figure class="chart compare-item">
+            <figcaption class="compare-title">Dot-Com era — Cisco</figcaption>
+            <img src="/projects/dotcom-ai/cisco-gjr-results.png"
+                 alt="GJR-GARCH model results for Cisco showing gamma of 0.2031 with p-value 0.00069, beta 0.8069, and a volatility chart from 1995 to 2000."
+                 loading="lazy" width="686" height="874">
+            <p class="compare-stat">γ = 0.203</p>
+          </figure>
+          <figure class="chart compare-item">
+            <figcaption class="compare-title">AI era — Nvidia</figcaption>
+            <img src="/projects/dotcom-ai/nvidia-gjr-results.png"
+                 alt="GJR-GARCH model results for Nvidia showing gamma of 0.1138 with p-value 0.080, beta 0.8891, and a volatility chart from 2023 to 2025."
+                 loading="lazy" width="686" height="874">
+            <p class="compare-stat">γ = 0.114</p>
+          </figure>
+        </div>
+
+        <p class="conclusion">
+          The leverage effect was roughly <strong>1.8× larger</strong> in the
+          Dot-Com bubble. By this measure the AI boom, for all its valuations, is
+          the structurally sturdier of the two.
+        </p>
+
+        <p>
+          One detail in the Cisco fit is worth flagging: its symmetric news term
+          (α) estimates at essentially zero, while γ is large and highly
+          significant. Read literally, Cisco's volatility responded to
+          <em>bad</em> news almost exclusively. Good news did nothing to it. That
+          is about as clean a statistical picture of a bubble's psychology as
+          you're likely to get.
+        </p>
+      </section>
+
+      <!-- ─────────────── Caveats ─────────────── -->
+      <section class="prose">
+        <h2>What this doesn't prove</h2>
+        <p>
+          A few limits worth stating plainly, since the conclusion is the kind
+          people like to quote out of context:
+        </p>
+        <ul class="caveats">
+          <li>
+            <strong>Nvidia's γ is not significant at the 5% level</strong>
+            (p ≈ 0.08). The AI-era asymmetry is weaker evidence than the Dot-Com
+            estimate, which sits at p &lt; 0.001. That cuts in favour of the
+            conclusion — there's less leverage effect to detect — but it's a
+            weaker finding, not an equally strong one.
+          </li>
+          <li>
+            <strong>The windows aren't the same length.</strong> The Cisco fit uses
+            1,309 observations against Nvidia's 523, so the two estimates don't
+            carry equal statistical power.
+          </li>
+          <li>
+            <strong>The Dot-Com era is complete; the AI era isn't.</strong> Cisco's
+            γ is measured across a full boom <em>and</em> bust. Nvidia's covers a
+            boom that hasn't ended. Fragility is most visible in the break, and
+            this one hasn't happened.
+          </li>
+          <li>
+            <strong>The trend regressions violate some OLS assumptions</strong> —
+            constant variance, autocorrelation, and normality all fail to varying
+            degrees. The Chow tests still fit the historical behaviour hypothesis,
+            but they should be read as evidence for a regime change rather than as
+            precise point estimates.
+          </li>
+        </ul>
+        <p>
+          The honest summary: on the evidence available, the AI boom is less
+          fragile than the Dot-Com bubble was — and the most likely reason is
+          simply that it hasn't been tested yet.
+        </p>
+      </section>
+
+      <footer class="article-footer">
+        <a class="btn btn-ghost" href="/#work">← Back to all work</a>
+      </footer>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>© <span id="year">2026</span> Carter Lin</p>
+      <p><a href="#top">Back to top ↑</a></p>
+    </div>
+  </footer>
+
+  <script type="module" src="../main.js"></script>
+</body>
+</html>

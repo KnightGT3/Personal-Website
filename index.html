@@ -95,28 +95,31 @@
     <section class="section" id="work">
       <div class="container">
         <h2 class="section-title"><span class="num">02</span> Selected Work</h2>
-        <p class="section-lede">Three or four strong pieces beat ten weak ones.</p>
+        <p class="section-lede">Research and projects I've taken far enough to write up.</p>
 
         <div class="card-grid">
           <!-- Duplicate one <article> per project -->
           <article class="card reveal">
-            <div class="card-media" aria-hidden="true"></div>
+            <a class="card-media card-media-img" href="/projects/dot-com-vs-ai" aria-hidden="true" tabindex="-1">
+              <img src="/projects/dotcom-ai/nasdaq-price-and-volatility.png" alt="" loading="lazy">
+            </a>
             <div class="card-body">
-              <h3>Project One</h3>
+              <h3><a href="/projects/dot-com-vs-ai">Dot-Com Bubble vs. AI Boom</a></h3>
               <p>
-                What it is, the problem it solved, and your specific role. One or two
-                sentences — link out for the long version.
+                Everyone reaches for the comparison, so I tested whether it survives the
+                data. Dated both eras with Chow tests, then measured fragility directly:
+                the Dot-Com bubble was about 1.8× more brittle.
               </p>
               <ul class="tag-list small">
-                <li>Tag</li><li>Tag</li><li>Tag</li>
+                <li>Python</li><li>Econometrics</li><li>GJR-GARCH</li>
               </ul>
               <div class="card-links">
-                <a href="#" rel="noopener">Live site →</a>
-                <a href="#" rel="noopener">Source →</a>
+                <a href="/projects/dot-com-vs-ai">Read the analysis →</a>
               </div>
             </div>
           </article>
 
+          <!-- Template for the next project — copy this block, uncomment, and fill in.
           <article class="card reveal">
             <div class="card-media" aria-hidden="true"></div>
             <div class="card-body">
@@ -152,6 +155,7 @@
               </div>
             </div>
           </article>
+          -->
         </div>
       </div>
     </section>
