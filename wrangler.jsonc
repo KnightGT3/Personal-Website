@@ -1,0 +1,13 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "personal-website",
+  "compatibility_date": "2026-08-25",
+
+  // Static assets only — there is no Worker script and nothing to build.
+  // The presence of this file stops Wrangler's auto-config from guessing
+  // that Vite (a dev-only dependency) means this is a Vite app.
+  "assets": {
+    "directory": "./public",
+    "not_found_handling": "404-page"
+  }
+}
