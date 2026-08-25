@@ -1,0 +1,21 @@
+{
+  "name": "personal-website",
+  "version": "1.0.0",
+  "description": "Static portfolio site. Vite is dev-only; deploys as plain files.",
+  "scripts": {
+    "dev": "vite"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KnightGT3/Personal-Website.git"
+  },
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/KnightGT3/Personal-Website/issues"
+  },
+  "homepage": "https://github.com/KnightGT3/Personal-Website#readme",
+  "devDependencies": {
+    "vite": "^8.2.2"
+  },
+  "private": true
+}
