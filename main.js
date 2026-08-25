@@ -90,50 +90,112 @@
     revealables.forEach(function (el) { revealer.observe(el); });
   }
 
-  /* ---------- Reading progress (article pages) ---------- */
+  /* ---------- Reading progress (article pages) ----------
+     The dot rides the leading edge of the fill. Its position interpolates
+     between section entries, so scrolling through one long section slides it
+     gradually toward the next label instead of snapping when the section
+     boundary crosses. An eased follow smooths out trackpad jitter. */
   var article = document.querySelector(".article");
   var railFill = document.getElementById("rail-fill");
   var topFill = document.getElementById("read-progress-fill");
+  var rail = document.querySelector(".reading-rail");
 
-  if (article && (railFill || topFill)) {
-    var updateProgress = function () {
-      var rect = article.getBoundingClientRect();
-      var scrollable = rect.height - window.innerHeight;
-      var pct = scrollable > 0
-        ? Math.min(1, Math.max(0, -rect.top / scrollable))
-        : (rect.top <= 0 ? 1 : 0);
-      var value = (pct * 100).toFixed(2) + "%";
-      if (railFill) railFill.style.height = value;
-      if (topFill) topFill.style.width = value;
-    };
-    window.addEventListener("scroll", updateProgress, { passive: true });
-    window.addEventListener("resize", updateProgress);
-    updateProgress();
-  }
-
-  /* ---------- Highlight the rail entry for the section in view ---------- */
-  var railLinks = Array.prototype.slice.call(
-    document.querySelectorAll(".rail-list a")
-  );
-  var railSections = railLinks
-    .map(function (link) { return document.querySelector(link.getAttribute("href")); })
+  var railStops = Array.prototype.slice
+    .call(document.querySelectorAll(".rail-list a"))
+    .map(function (link) {
+      var section = document.querySelector(link.getAttribute("href"));
+      return section ? { link: link, section: section } : null;
+    })
     .filter(Boolean);
 
-  if ("IntersectionObserver" in window && railSections.length) {
-    var railSpy = new IntersectionObserver(
-      function (entries) {
-        entries.forEach(function (entry) {
-          if (!entry.isIntersecting) return;
-          railLinks.forEach(function (link) {
-            link.classList.toggle(
-              "active",
-              link.getAttribute("href") === "#" + entry.target.id
-            );
-          });
-        });
-      },
-      { rootMargin: "-20% 0px -70% 0px" }
-    );
-    railSections.forEach(function (section) { railSpy.observe(section); });
+  if (article && (railFill || topFill)) {
+    var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var TRACK_INSET = 4; // matches .rail-track top/bottom in the stylesheet
+    var targetY = 0;
+    var currentY = 0;
+    var frame = null;
+
+    var railGeometry = function () {
+      if (!rail || !railStops.length) return null;
+      var railTop = rail.getBoundingClientRect().top;
+      return railStops.map(function (stop) {
+        var box = stop.link.getBoundingClientRect();
+        var sectionBox = stop.section.getBoundingClientRect();
+        return {
+          center: box.top - railTop + box.height / 2,
+          top: sectionBox.top + window.scrollY,
+          height: sectionBox.height
+        };
+      });
+    };
+
+    var paint = function () {
+      if (railFill) {
+        railFill.style.height = Math.max(0, currentY - TRACK_INSET).toFixed(1) + "px";
+      }
+    };
+
+    var step = function () {
+      var delta = targetY - currentY;
+      if (Math.abs(delta) < 0.3) {
+        currentY = targetY;
+        paint();
+        frame = null;
+        return;
+      }
+      currentY += delta * 0.18; // ease toward the target
+      paint();
+      frame = window.requestAnimationFrame(step);
+    };
+
+    var update = function () {
+      // Overall article progress drives the narrow-screen bar.
+      var box = article.getBoundingClientRect();
+      var scrollable = box.height - window.innerHeight;
+      var overall = scrollable > 0
+        ? Math.min(1, Math.max(0, -box.top / scrollable))
+        : (box.top <= 0 ? 1 : 0);
+      if (topFill) topFill.style.width = (overall * 100).toFixed(2) + "%";
+
+      var stops = railGeometry();
+      if (!stops || !railFill) return;
+
+      // Where the reader's eye is, roughly a third down the viewport.
+      var readingLine = window.scrollY + window.innerHeight * 0.33;
+
+      var i = 0;
+      while (i < stops.length - 1 && readingLine >= stops[i + 1].top) i++;
+
+      var here = stops[i];
+      var fraction = here.height > 0 ? (readingLine - here.top) / here.height : 0;
+      fraction = Math.min(1, Math.max(0, fraction));
+
+      var nextCenter = i < stops.length - 1 ? stops[i + 1].center : here.center;
+      targetY = here.center + (nextCenter - here.center) * fraction;
+
+      // Nearest label lights up, so the text follows the dot rather than
+      // leading or lagging it.
+      var nearest = 0;
+      var shortest = Infinity;
+      stops.forEach(function (stop, index) {
+        var distance = Math.abs(stop.center - targetY);
+        if (distance < shortest) { shortest = distance; nearest = index; }
+      });
+      railStops.forEach(function (stop, index) {
+        stop.link.classList.toggle("active", index === nearest);
+      });
+
+      if (reduceMotion) {
+        currentY = targetY;
+        paint();
+      } else if (frame === null) {
+        frame = window.requestAnimationFrame(step);
+      }
+    };
+
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    window.addEventListener("load", update);
+    update();
   }
 })();

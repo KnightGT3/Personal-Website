@@ -669,11 +669,25 @@ figure.chart figcaption {
   border-radius: 2px;
 }
 .rail-fill {
+  position: relative;
   width: 2px;
   height: 0;
   background: var(--accent);
   border-radius: 2px;
-  transition: height .12s linear;
+}
+/* The dot rides the leading edge of the fill, so it moves continuously. */
+.rail-fill::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 9px;
+  height: 9px;
+  margin-left: -4.5px;
+  margin-bottom: -4.5px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px var(--bg), 0 0 10px color-mix(in srgb, var(--accent) 55%, transparent);
 }
 .rail-list {
   list-style: none;
@@ -691,18 +705,7 @@ figure.chart figcaption {
 }
 .rail-list a:hover { color: var(--text); text-decoration: none; }
 .rail-list a.active { color: var(--text); font-weight: 600; }
-.rail-list a.active::before {
-  content: "";
-  position: absolute;
-  left: -25px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 0 3px var(--bg);
-}
+.rail-list a { transition: color .25s ease; }
 
 @media (min-width: 1180px) {
   .reading-rail { display: block; }
@@ -710,5 +713,5 @@ figure.chart figcaption {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .read-progress span, .rail-fill { transition: none; }
+  .read-progress span { transition: none; }
 }
