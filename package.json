@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "Static portfolio site. Vite is dev-only; deploys as plain files.",
   "scripts": {
-    "dev": "vite public"
+    "dev": "vite",
+    "build": "vite build"
   },
   "repository": {
     "type": "git",

@@ -3,11 +3,12 @@
   "name": "personal-website",
   "compatibility_date": "2026-08-25",
 
-  // Static assets only — there is no Worker script and nothing to build.
-  // The presence of this file stops Wrangler's auto-config from guessing
-  // that Vite (a dev-only dependency) means this is a Vite app.
+  // Static assets only — no Worker script.
+  // `vite build` writes the site to dist/ and emits dist/wrangler.json, which
+  // takes over from this file at deploy time. Pointing at dist/ here means a
+  // deploy attempted without a build fails loudly instead of shipping nothing.
   "assets": {
-    "directory": "./public",
+    "directory": "./dist",
     "not_found_handling": "404-page"
   }
 }
