@@ -7,6 +7,8 @@
   --bg-subtle:   #f6f7f9;
   --surface:     #ffffff;
   --border:      #e3e6ea;
+  /* Brighter hairline used to frame photographs. */
+  --border-light: rgba(20, 24, 31, .20);
   --text:        #14181f;
   --text-muted:  #5b6472;
   --accent:      #3b5bdb;
@@ -25,6 +27,7 @@
     --bg-subtle:   #11141b;
     --surface:     #131722;
     --border:      #242a38;
+    --border-light: rgba(255, 255, 255, .24);
     --text:        #e9ecf1;
     --text-muted:  #9aa4b6;
     --accent:      #8ea2ff;
@@ -281,7 +284,7 @@ img { max-width: 100%; height: auto; display: block; }
   width: 100%;
   padding: 0;
   margin: 0;
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-light);
   border-radius: var(--radius);
   background: var(--bg-subtle);
   overflow: hidden;
@@ -419,7 +422,7 @@ img { max-width: 100%; height: auto; display: block; }
   flex: none;
   object-fit: cover;
   border-radius: 11px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-light);
 }
 .bubble-when {
   display: inline-flex;
@@ -458,11 +461,26 @@ img { max-width: 100%; height: auto; display: block; }
 .bubble p { color: var(--text-muted); font-size: .93rem; margin-bottom: 0; }
 .bubble .tag-list { margin-top: auto; padding-top: 18px; }
 
-/* Education reads as the odd one out, so it gets a tinted edge. */
-.bubble-edu {
-  border-color: color-mix(in srgb, var(--accent) 35%, var(--border));
-  background: linear-gradient(160deg, var(--accent-soft) 0%, var(--surface) 55%);
+/* Education sits flat like the other cards until you hover it. The tint
+   lives on a pseudo-element because a CSS gradient cannot be transitioned
+   directly — fading an overlay's opacity is what makes it arrive smoothly
+   instead of snapping on. */
+.bubble-edu { position: relative; overflow: hidden; }
+.bubble-edu::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg, var(--accent-soft) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity .3s ease;
+  pointer-events: none;
 }
+.bubble-edu:hover::before { opacity: 1; }
+.bubble-edu:hover {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+}
+/* Keep the card's own content above the tint layer. */
+.bubble-edu > * { position: relative; z-index: 1; }
 
 /* ---------- Contact ---------- */
 .section-contact { text-align: center; }
@@ -689,7 +707,7 @@ figure.chart img {
   width: 100%;
   height: auto;
   background: #fff;
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-light);
   border-radius: var(--radius);
   padding: 12px;
 }
@@ -844,6 +862,7 @@ body.home {
   --bg-subtle:   #11141b;
   --surface:     #131722;
   --border:      #242a38;
+  --border-light: rgba(255, 255, 255, .24);
   --text:        #e9ecf1;
   --text-muted:  #9aa4b6;
   --accent:      #8ea2ff;
