@@ -17,7 +17,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="home">
   <a class="skip-link" href="#main">Skip to content</a>
 
   <header class="site-header" id="site-header">
@@ -39,8 +39,21 @@
 
   <main id="main">
     <!-- ───────────────────────── Hero ───────────────────────── -->
-    <section class="hero" id="top">
-      <div class="container">
+    <section class="hero photo-section" id="top">
+      <div class="section-bg" aria-hidden="true">
+        <img class="section-bg-img"
+             src="/photos/brz-night-1620.webp"
+             srcset="/photos/brz-night-1000.webp 1000w,
+                     /photos/brz-night-1620.webp 1620w"
+             sizes="100vw"
+             alt=""
+             width="1620" height="1080"
+             fetchpriority="high" decoding="async">
+        <div class="section-bg-scrim"></div>
+        <!-- GSAP fades this to opaque while the hero is pinned. -->
+        <div class="section-bg-fade" id="hero-fade"></div>
+      </div>
+      <div class="container hero-content">
         <p class="eyebrow reveal">University of Waterloo</p>
         <h1 class="reveal">
           Hi, I'm <span class="accent">Carter</span>.
@@ -82,17 +95,32 @@
             </ul>
           </div>
           <div class="about-aside reveal">
-            <!-- Drop a photo at assets/portrait.jpg and swap the placeholder below -->
-            <div class="portrait" role="img" aria-label="Portrait placeholder">
-              <span>Your photo<br>goes here</span>
-            </div>
+            <img class="portrait"
+                 src="/photos/brz-taillights-1080.webp"
+                 srcset="/photos/brz-taillights-1000.webp 1000w,
+                         /photos/brz-taillights-1080.webp 1080w"
+                 sizes="(min-width: 821px) 320px, 280px"
+                 alt="Rear taillights of a BRZ glowing in a downtown parking lot at night."
+                 width="1080" height="1620"
+                 loading="lazy" decoding="async">
           </div>
         </div>
       </div>
     </section>
 
     <!-- ───────────────────────── Work ───────────────────────── -->
-    <section class="section" id="work">
+    <section class="section photo-section" id="work">
+      <div class="section-bg" aria-hidden="true">
+        <img class="section-bg-img"
+             src="/photos/city-port-2000.webp"
+             srcset="/photos/city-port-1000.webp 1000w,
+                     /photos/city-port-2000.webp 2000w"
+             sizes="100vw"
+             alt=""
+             width="2000" height="1335"
+             loading="lazy" decoding="async">
+        <div class="section-bg-scrim"></div>
+      </div>
       <div class="container">
         <h2 class="section-title"><span class="num">02</span> Selected Work</h2>
         <p class="section-lede">Research and projects I've taken far enough to write up.</p>
@@ -201,7 +229,18 @@
     </section>
 
     <!-- ─────────────────────── Contact ─────────────────────── -->
-    <section class="section section-contact" id="contact">
+    <section class="section section-contact photo-section" id="contact">
+      <div class="section-bg" aria-hidden="true">
+        <img class="section-bg-img"
+             src="/photos/sunset-cove-2000.webp"
+             srcset="/photos/sunset-cove-1000.webp 1000w,
+                     /photos/sunset-cove-2000.webp 2000w"
+             sizes="100vw"
+             alt=""
+             width="2000" height="1125"
+             loading="lazy" decoding="async">
+        <div class="section-bg-scrim"></div>
+      </div>
       <div class="container">
         <h2 class="section-title"><span class="num">04</span> Contact</h2>
         <p class="contact-lede reveal">

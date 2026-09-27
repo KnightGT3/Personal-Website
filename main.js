@@ -1,4 +1,11 @@
-/* Portfolio site behavior. No dependencies, no build step. */
+/* Portfolio site behavior. */
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+// ScrollTrigger is a plugin, so it has to be registered before any
+// scrollTrigger:{} config is read. Doing it once at module scope is enough.
+gsap.registerPlugin(ScrollTrigger);
+
 (function () {
   "use strict";
 
@@ -197,5 +204,124 @@
     window.addEventListener("resize", update);
     window.addEventListener("load", update);
     update();
+  }
+
+  /* ============================================================
+     Scroll animation (homepage only)
+
+     Everything lives inside gsap.matchMedia(), which is GSAP's
+     media-query-aware context. Animations created inside its callback are
+     only built while the query matches, and GSAP reverts them
+     automatically when it stops matching — so a visitor who has "reduce
+     motion" turned on never gets these animations at all, and the page
+     stays a normal static scroll. That is why the reduced-motion check is
+     the query itself rather than an if-statement inside the animation.
+     ============================================================ */
+  var hero = document.querySelector(".hero.photo-section");
+
+  if (document.body.classList.contains("home") && hero) {
+    var mm = gsap.matchMedia();
+
+    mm.add("(prefers-reduced-motion: no-preference)", function () {
+      // CSS `scroll-behavior: smooth` fights ScrollTrigger's scrub: the
+      // browser animates the scroll position while GSAP reads it, which
+      // reads as stutter. Disable it while these animations are live and
+      // restore it in the cleanup below.
+      var htmlEl = document.documentElement;
+      var priorScrollBehavior = htmlEl.style.scrollBehavior;
+      htmlEl.style.scrollBehavior = "auto";
+
+      /* ---------- Hero pin ---------- */
+      var heroTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: hero,
+
+          // start/end define the scroll window this timeline maps onto.
+          // "top top" = when the top of the hero reaches the top of the
+          // viewport (immediately, since the hero is first on the page).
+          start: "top top",
+
+          // "+=100%" = the window lasts one viewport height of scrolling.
+          // That is the "about one viewport of scroll" you asked for.
+          end: "+=100%",
+
+          // pin freezes the element in place for that window. GSAP does
+          // this by fixing it and inserting a spacer of equal height, so
+          // the rest of the page keeps its normal flow.
+          pin: true,
+
+          // pinSpacing keeps that spacer. With it, the next section slides
+          // up into view exactly as the pin releases. Set it to false and
+          // the following section would overlap the hero instead.
+          pinSpacing: true,
+
+          // scrub ties progress to scroll position rather than playing on
+          // a timer, so dragging the scrollbar backwards rewinds it. `true`
+          // is 1:1; a number like 0.5 adds that many seconds of catch-up.
+          scrub: true,
+
+          // anticipatePin looks slightly ahead of the scroll position when
+          // pinning. Without it, fast scrolling can show a one-frame jump
+          // as the element switches to fixed positioning.
+          anticipatePin: 1,
+
+          // Recalculates start/end on refresh instead of caching them,
+          // which matters here because the lazy-loaded photographs change
+          // the page height after first paint.
+          invalidateOnRefresh: true
+        }
+      });
+
+      // Position parameter `0` on each tween starts them all together, so
+      // the zoom, the fade to black, and the text exit run as one move.
+      heroTl
+        .to(hero.querySelector(".section-bg-img"), { scale: 1.15, ease: "none" }, 0)
+        .to(hero.querySelector(".section-bg-fade"), { opacity: 1, ease: "none" }, 0)
+        // Animating the wrapper, not the .reveal children, leaves the
+        // existing reveal system in sole control of their opacity.
+        .to(hero.querySelector(".hero-content"), { y: -80, opacity: 0, ease: "none" }, 0);
+
+      /* ---------- Background colour journey ---------- */
+      // The body starts at #0b0d12 from the stylesheet. Each stop scrubs
+      // the body toward its colour as that section approaches, and scrub
+      // means scrolling back up runs the transition in reverse.
+      var colourStops = [
+        { selector: "#work", color: "#272430" },    // warm slate
+        { selector: "#contact", color: "#3a2308" }  // deep amber
+      ];
+
+      colourStops.forEach(function (stop) {
+        var section = document.querySelector(stop.selector);
+        if (!section) return;
+
+        gsap.to(document.body, {
+          backgroundColor: stop.color,
+          ease: "none",
+          scrollTrigger: {
+            trigger: section,
+
+            // "top bottom" = the section's top touching the viewport's
+            // bottom, i.e. the moment it first peeks into view.
+            start: "top bottom",
+
+            // "top center" = its top reaching the middle of the screen.
+            // The colour is fully swapped by the time you are reading it.
+            end: "top center",
+
+            scrub: true
+          }
+        });
+      });
+
+      // matchMedia cleanup: GSAP reverts the animations itself, so this
+      // only has to undo the side effect it cannot know about.
+      return function () {
+        htmlEl.style.scrollBehavior = priorScrollBehavior;
+      };
+    });
+
+    // Lazy-loaded photos land after first paint and change the document
+    // height, which invalidates every start/end ScrollTrigger measured.
+    window.addEventListener("load", function () { ScrollTrigger.refresh(); });
   }
 })();
