@@ -393,6 +393,8 @@ img { max-width: 100%; height: auto; display: block; }
   margin-top: 8px;
 }
 .bubble {
+  position: relative;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   background: var(--surface);
@@ -461,12 +463,11 @@ img { max-width: 100%; height: auto; display: block; }
 .bubble p { color: var(--text-muted); font-size: .93rem; margin-bottom: 0; }
 .bubble .tag-list { margin-top: auto; padding-top: 18px; }
 
-/* Education sits flat like the other cards until you hover it. The tint
-   lives on a pseudo-element because a CSS gradient cannot be transitioned
+/* Every card sits flat until hovered, then a tint fades in. The tint lives
+   on a pseudo-element because a CSS gradient cannot be transitioned
    directly — fading an overlay's opacity is what makes it arrive smoothly
    instead of snapping on. */
-.bubble-edu { position: relative; overflow: hidden; }
-.bubble-edu::before {
+.bubble::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -475,12 +476,9 @@ img { max-width: 100%; height: auto; display: block; }
   transition: opacity .3s ease;
   pointer-events: none;
 }
-.bubble-edu:hover::before { opacity: 1; }
-.bubble-edu:hover {
-  border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
-}
-/* Keep the card's own content above the tint layer. */
-.bubble-edu > * { position: relative; z-index: 1; }
+.bubble:hover::before { opacity: 1; }
+/* Keep each card's own content above its tint layer. */
+.bubble > * { position: relative; z-index: 1; }
 
 /* ---------- Contact ---------- */
 .section-contact { text-align: center; }
