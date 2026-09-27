@@ -112,16 +112,32 @@ img { max-width: 100%; height: auto; display: block; }
   justify-content: space-between;
 }
 
+/* Monogram: a filled badge rather than an outline, so the corner reads as
+   a mark instead of another nav item. Foreground is var(--bg) so it stays
+   legible whichever way the accent goes between themes. */
 .brand {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  height: 34px;
+  padding: 0 10px;
   font-weight: 700;
-  font-size: 1.05rem;
-  letter-spacing: .04em;
-  color: var(--text);
-  border: 1.5px solid var(--border);
-  border-radius: 8px;
-  padding: 4px 9px;
+  font-style: italic;
+  font-size: 1.1rem;
+  letter-spacing: .01em;
+  color: var(--bg);
+  background: var(--accent);
+  border: 0;
+  border-radius: 10px;
+  transition: transform .15s ease, filter .15s ease;
 }
-.brand:hover { text-decoration: none; border-color: var(--accent); color: var(--accent); }
+.brand:hover {
+  text-decoration: none;
+  color: var(--bg);
+  filter: brightness(1.12);
+  transform: translateY(-1px);
+}
 
 .site-nav { display: flex; gap: 28px; }
 .site-nav a {
