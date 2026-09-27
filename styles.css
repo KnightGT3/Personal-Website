@@ -403,11 +403,29 @@ img { max-width: 100%; height: auto; display: block; }
   border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
   box-shadow: var(--shadow);
 }
+/* Logo left, date right, so every card opens on the same rhythm. */
+.bubble-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+/* Each logo already carries its own background, so it is rounded directly
+   rather than floated on a white plate. */
+.bubble-logo {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  object-fit: cover;
+  border-radius: 11px;
+  border: 1px solid var(--border);
+}
 .bubble-when {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  align-self: flex-start;
+  align-self: center;
   font-size: .76rem;
   font-weight: 600;
   letter-spacing: .02em;
@@ -415,7 +433,7 @@ img { max-width: 100%; height: auto; display: block; }
   background: var(--accent-soft);
   border-radius: 999px;
   padding: 5px 12px;
-  margin: 0 0 14px;
+  margin: 0;
   font-variant-numeric: tabular-nums;
 }
 .bubble-expected {
