@@ -34,17 +34,28 @@ and because `.reveal` elements start at `opacity: 0`, most of the page renders b
 
 ## Deploying
 
-Pushing to `main` deploys automatically. Cloudflare runs `npx vite build`, then
-`npx wrangler deploy` ships `dist/`.
+Cloudflare builds and deploys on every push to `main`.
 
-To check locally without shipping:
+**The deploy command in the Cloudflare dashboard must be `npm run deploy`**,
+not `npx wrangler deploy`. Wrangler only uploads; it does not build. With the bare
+wrangler command the deploy fails with:
 
-```sh
-npm run build
-npx wrangler deploy --dry-run
+```
+The directory specified by the "assets.directory" field does not exist: /opt/buildhome/repo/dist
 ```
 
-To use your own domain: Cloudflare dashboard → the Worker → **Settings** →
+because nothing created `dist/`. The `deploy` script runs `vite build` first, which
+is required now that `main.js` imports GSAP and has to be bundled.
+
+To rehearse the exact CI sequence locally:
+
+```sh
+rm -rf dist
+npx vite build
+npx wrangler deploy --dry-run   # should report ~35 files from dist/
+```
+
+To use your own domain: Cloudflare dashboard -> the Worker -> **Settings** ->
 **Domains & Routes**.
 
 ## Making it yours
