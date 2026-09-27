@@ -356,26 +356,69 @@ img { max-width: 100%; height: auto; display: block; }
   font-weight: 600;
 }
 
-/* ---------- Timeline ---------- */
-.timeline { list-style: none; margin: 32px 0 0; padding: 0; }
-.timeline-item {
+/* ---------- Experience bubbles ---------- */
+.bubble-grid {
   display: grid;
-  grid-template-columns: 170px 1fr;
-  gap: 28px;
-  padding: 26px 0;
-  border-top: 1px solid var(--border);
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  gap: 20px;
+  margin-top: 8px;
 }
-.timeline-item:last-child { border-bottom: 1px solid var(--border); }
-.timeline-when {
-  font-size: .85rem;
+.bubble {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 26px 24px;
+  transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+.bubble:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+  box-shadow: var(--shadow);
+}
+.bubble-when {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  font-size: .76rem;
   font-weight: 600;
-  color: var(--text-muted);
+  letter-spacing: .02em;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-radius: 999px;
+  padding: 5px 12px;
+  margin: 0 0 14px;
   font-variant-numeric: tabular-nums;
-  padding-top: 2px;
 }
-.timeline-what p { color: var(--text-muted); font-size: .94rem; margin-bottom: 0; }
-.timeline-what .at { color: var(--border); }
-.timeline-what .org { color: var(--accent); }
+.bubble-expected {
+  font-weight: 500;
+  opacity: .75;
+  text-transform: lowercase;
+}
+.bubble h3 { margin-bottom: .3em; }
+.bubble-org {
+  font-size: .9rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: .9em;
+}
+.bubble-place {
+  display: block;
+  font-weight: 400;
+  font-size: .82rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+.bubble p { color: var(--text-muted); font-size: .93rem; margin-bottom: 0; }
+.bubble .tag-list { margin-top: auto; padding-top: 18px; }
+
+/* Education reads as the odd one out, so it gets a tinted edge. */
+.bubble-edu {
+  border-color: color-mix(in srgb, var(--accent) 35%, var(--border));
+  background: linear-gradient(160deg, var(--accent-soft) 0%, var(--surface) 55%);
+}
 
 /* ---------- Contact ---------- */
 .section-contact { text-align: center; }
