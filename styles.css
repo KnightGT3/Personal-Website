@@ -253,6 +253,16 @@ img { max-width: 100%; height: auto; display: block; }
 }
 .section-lede { color: var(--text-muted); margin-bottom: 36px; }
 
+/* Section titles are baseline-aligned for the number, so the icon has to
+   opt out and centre itself against the text instead. */
+.section-icon {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  align-self: center;
+  color: var(--accent);
+}
+
 /* ---------- About ---------- */
 .about-grid {
   display: grid;
