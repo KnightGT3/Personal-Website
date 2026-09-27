@@ -345,13 +345,15 @@ img { max-width: 100%; height: auto; display: block; }
 }
 .bubble-wide {
   display: grid;
-  grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
+  /* A narrow thumbnail rail keeps each project to a compact row, so several
+     stack without the section running long. */
+  grid-template-columns: 150px minmax(0, 1fr);
   padding: 0;            /* the media sits flush; the body carries the padding */
   align-items: stretch;
 }
 .bubble-media {
   display: block;
-  min-height: 210px;
+  min-height: 150px;
   background: var(--bg-subtle);
   border-right: 1px solid var(--border-light);
 }
@@ -364,7 +366,7 @@ img { max-width: 100%; height: auto; display: block; }
 .bubble-body {
   display: flex;
   flex-direction: column;
-  padding: 26px 26px 24px;
+  padding: 22px 24px 20px;
 }
 .bubble-body h3 { margin-bottom: .45em; }
 .bubble-body h3 a { color: inherit; }
@@ -384,8 +386,8 @@ img { max-width: 100%; height: auto; display: block; }
 @media (max-width: 760px) {
   .bubble-wide { grid-template-columns: 1fr; }
   .bubble-media {
-    min-height: 170px;
-    max-height: 220px;
+    min-height: 140px;
+    max-height: 180px;
     border-right: 0;
     border-bottom: 1px solid var(--border-light);
   }
