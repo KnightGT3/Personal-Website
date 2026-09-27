@@ -206,6 +206,21 @@ gsap.registerPlugin(ScrollTrigger);
     update();
   }
 
+  /* ---------- Portrait crossfade ----------
+     Hover and keyboard focus are handled in CSS. Touch devices have no
+     hover, so a tap toggles a sticky .swapped class instead. The fade
+     itself is a CSS transition, which is what lets the reduced-motion
+     media query turn it into an instant swap. */
+  var portraitSwap = document.querySelector(".portrait-swap");
+
+  if (portraitSwap) {
+    portraitSwap.addEventListener("click", function () {
+      var swapped = !portraitSwap.classList.contains("swapped");
+      portraitSwap.classList.toggle("swapped", swapped);
+      portraitSwap.setAttribute("aria-pressed", String(swapped));
+    });
+  }
+
   /* ============================================================
      Scroll animation (homepage only)
 

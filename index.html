@@ -95,14 +95,25 @@
             </ul>
           </div>
           <div class="about-aside reveal">
-            <img class="portrait"
-                 src="/photos/brz-taillights-1080.webp"
-                 srcset="/photos/brz-taillights-1000.webp 1000w,
-                         /photos/brz-taillights-1080.webp 1080w"
-                 sizes="(min-width: 821px) 320px, 280px"
-                 alt="Rear taillights of a BRZ glowing in a downtown parking lot at night."
-                 width="1080" height="1620"
-                 loading="lazy" decoding="async">
+            <button class="portrait-swap" type="button" aria-pressed="false"
+                    aria-label="Portrait of Carter Lin. Activate to switch to a candid photo beside a yellow Corvette.">
+              <img class="portrait-base"
+                   src="/photos/portrait-dark-1200.webp"
+                   srcset="/photos/portrait-dark-600.webp 600w,
+                           /photos/portrait-dark-1200.webp 1200w"
+                   sizes="(min-width: 821px) 320px, 280px"
+                   alt=""
+                   width="1200" height="1500"
+                   loading="lazy" decoding="async">
+              <img class="portrait-alt"
+                   src="/photos/candid-corvette-1200.webp"
+                   srcset="/photos/candid-corvette-600.webp 600w,
+                           /photos/candid-corvette-1200.webp 1200w"
+                   sizes="(min-width: 821px) 320px, 280px"
+                   alt=""
+                   width="1200" height="1500"
+                   loading="lazy" decoding="async" aria-hidden="true">
+            </button>
           </div>
         </div>
       </div>

@@ -247,14 +247,43 @@ img { max-width: 100%; height: auto; display: block; }
 }
 .about-text p { color: var(--text-muted); }
 
-.portrait {
+/* Two 4:5 portraits stacked in the same box; the second crossfades in on
+   hover, on keyboard focus, and on tap (JS toggles .swapped). */
+.portrait-swap {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-subtle);
+  overflow: hidden;
+  cursor: pointer;
+  line-height: 0;
+}
+.portrait-swap img {
+  display: block;
   width: 100%;
   aspect-ratio: 4 / 5;
   object-fit: cover;
   object-position: center;
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  background: var(--bg-subtle);
+}
+.portrait-alt {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity .45s ease;
+}
+.portrait-swap:hover .portrait-alt,
+.portrait-swap:focus-visible .portrait-alt,
+.portrait-swap.swapped .portrait-alt {
+  opacity: 1;
+}
+
+/* Reduced motion: swap outright rather than crossfade. */
+@media (prefers-reduced-motion: reduce) {
+  .portrait-alt { transition: none; }
 }
 
 .tag-list {
