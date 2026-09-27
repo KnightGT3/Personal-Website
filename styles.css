@@ -336,46 +336,41 @@ img { max-width: 100%; height: auto; display: block; }
 .tag-list.small li { font-size: .76rem; padding: 3px 10px; }
 
 /* ---------- Work cards ---------- */
-.card-grid {
+/* Selected Work reuses the experience bubble, laid out horizontally:
+   thumbnail on the left, everything else on the right. */
+.work-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
-  gap: 24px;
+  grid-template-columns: 1fr;
+  gap: 20px;
 }
-.card {
-  display: flex;
-  flex-direction: column;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+.bubble-wide {
+  display: grid;
+  grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
+  padding: 0;            /* the media sits flush; the body carries the padding */
+  align-items: stretch;
 }
-.card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow);
-  border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
-}
-.card-media-img {
+.bubble-media {
   display: block;
-  padding: 0;
-  background: #fff;
+  min-height: 210px;
+  background: var(--bg-subtle);
+  border-right: 1px solid var(--border-light);
 }
-.card-media-img img {
+.bubble-media img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: top center;
 }
-.card-body h3 a { color: inherit; }
-.card-body h3 a:hover { color: var(--accent); text-decoration: none; }
-.card-media {
-  aspect-ratio: 16 / 9;
-  background:
-    linear-gradient(135deg, var(--accent-soft), var(--bg-subtle));
-  border-bottom: 1px solid var(--border);
+.bubble-body {
+  display: flex;
+  flex-direction: column;
+  padding: 26px 26px 24px;
 }
-.card-body { padding: 22px; display: flex; flex-direction: column; flex: 1; }
-.card-body p { color: var(--text-muted); font-size: .93rem; margin-bottom: 0; }
+.bubble-body h3 { margin-bottom: .45em; }
+.bubble-body h3 a { color: inherit; }
+.bubble-body h3 a:hover { color: var(--accent); text-decoration: none; }
+.bubble-body > p { color: var(--text-muted); font-size: .93rem; margin-bottom: 0; }
+
 .card-links {
   display: flex;
   gap: 18px;
@@ -383,6 +378,17 @@ img { max-width: 100%; height: auto; display: block; }
   padding-top: 18px;
   font-size: .88rem;
   font-weight: 600;
+}
+
+/* Side by side needs real width; below that the thumbnail goes on top. */
+@media (max-width: 760px) {
+  .bubble-wide { grid-template-columns: 1fr; }
+  .bubble-media {
+    min-height: 170px;
+    max-height: 220px;
+    border-right: 0;
+    border-bottom: 1px solid var(--border-light);
+  }
 }
 
 /* ---------- Experience bubbles ---------- */
@@ -462,6 +468,7 @@ img { max-width: 100%; height: auto; display: block; }
 }
 .bubble p { color: var(--text-muted); font-size: .93rem; margin-bottom: 0; }
 .bubble .tag-list { margin-top: auto; padding-top: 18px; }
+.bubble-body .tag-list { margin-top: 18px; padding-top: 0; }
 
 /* Every card sits flat until hovered, then a tint fades in. The tint lives
    on a pseudo-element because a CSS gradient cannot be transitioned
